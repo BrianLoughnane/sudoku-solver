@@ -1,8 +1,9 @@
 $(document).on('ready', function () {
   var hasDuplicates = function (array) {
+    // debugger
     var sortedValues = array.sort();
     for(var i = 1; i < sortedValues.length; i++) {
-      if(sortedValues[i] === sortedValues[i-1]) {
+      if(sortedValues[i] && (sortedValues[i] === sortedValues[i-1])) {
         return true;
       }
     }
@@ -31,17 +32,8 @@ $(document).on('ready', function () {
     var row = matrix[rowIndex];
     var values = _.map(row, function (cell) {
       return (cell.value === "") ? undefined : +cell.value;
-    })
-    var sortedValues = values.sort();
-    for(var i = 1; i < sortedValues.length; i++) {
-      if(sortedValues[i] === undefined) {
-        return false;
-      }
-      if(sortedValues[i] === sortedValues[i-1]) {
-        return true;
-      }
-    }
-    return false;
+    });
+    return hasDuplicates(values);
   }
 
   var hasRowConflicts = function (matrix) {
@@ -58,14 +50,7 @@ $(document).on('ready', function () {
     var colValues = _.map(matrix, function (row) {
       return +row[colIndex].value;
     });
-    // return hasDuplicates(colValues);
-    var sortedValues = colValues.sort();
-    for(var i = 1; i < sortedValues.length; i++) {
-      if(sortedValues[i] && (sortedValues[i] === sortedValues[i-1])) {
-        return true;
-      }
-    }
-    return false;
+    return hasDuplicates(colValues);
   }
 
   var hasColConflicts = function (matrix) {
