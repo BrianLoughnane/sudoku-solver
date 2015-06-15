@@ -84,9 +84,16 @@ $(document).on('ready', function () {
     return hasDuplicates(sortedValues);
   }
 
-  // var hasGroupConflictAt(matrix) {
-
-  // }
+  var hasGroupConflicts = function (matrix) {
+    for(var rowGroupIndex = 1; rowGroupIndex < 4; rowGroupIndex++) {
+      for(var colGroupIndex = 1; colGroupIndex < 4; colGroupIndex++) {
+        if(hasGroupConflictAt(rowGroupIndex, colGroupIndex, matrix)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 
   $('.solve')
     .on('click', function (e) {
@@ -95,7 +102,8 @@ $(document).on('ready', function () {
       var matrix = generateMatrix();
       console.log('hasRowConflicts', hasRowConflicts(matrix));
       console.log('hasColConflicts', hasColConflicts(matrix));
-      console.log('groupConflicts1,1', hasGroupConflictAt(1,1, matrix));
+      // console.log('groupConflicts1,1', hasGroupConflictAt(1,1, matrix));
+      console.log('hasGroupConflicts', hasGroupConflicts(matrix));
 
       // console.log('hasColConflicts', hasColConflicts(matrix));
     }); // end on click
