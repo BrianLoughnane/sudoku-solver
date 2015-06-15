@@ -103,33 +103,19 @@ $(document).on('ready', function () {
     return false;
   }
 
-  var hasConflicts = function (matrix) {
-    return hasRowConflicts(matrix) || hasColConflicts(matrix) || hasGroupConflicts(matrix);
-  }
 
   $('.solve')
     .on('click', function (e) {
       e.preventDefault();
-
       var matrix = generateMatrix();
-      var inner = function (rowIndex, colIndex) {
-
+      var hasConflicts = function () {
+        return hasRowConflicts(matrix) || hasColConflicts(matrix) || hasGroupConflicts(matrix);
       }
 
+      var inner = function (rowIndex, colIndex) {
+        console.log('hasConflicts?',hasConflicts());
+      }
       inner(0,0);
-
-      // var firstRow = matrix[0];
-      // for(var colIndex = 0; colIndex < firstRow.length; colIndex++) {
-      //   var cell = firstRow[colIndex];
-      //   if(cell.set === false) {
-
-      //   }
-      // }
-
-      // console.log('hasRowConflicts', hasRowConflicts(matrix));
-      // console.log('hasColConflicts', hasColConflicts(matrix));
-      // console.log('hasGroupConflicts', hasGroupConflicts(matrix));
-      // console.log('hasConflicts', hasConflicts(matrix));
     }); // end on click
 
 
