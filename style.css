@@ -1,0 +1,23 @@
+table {
+  width: 500px;
+  height: 500px;
+}
+
+table * {
+  border: 1px solid black;
+}
+
+input {
+  height: 45px;
+  width: 45px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.td3, .td6 {
+  border-right: 5px solid darkblue;
+}
+
+.tr3 td, .tr6 td{
+  border-bottom: 5px solid darkblue;
+}
