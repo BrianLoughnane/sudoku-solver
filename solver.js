@@ -28,6 +28,14 @@ $(document).on('ready', function () {
     return matrix;
   }
 
+  var setValue = function(rowIndex, colIndex, matrix, value) {
+    matrix[rowIndex][colIndex] = value;
+  }
+
+  var removeValue = function(rowIndex, colIndex, matrix) {
+    matrix[rowIndex][colIndex] = 0;
+  }
+
   var hasRowConflictAt = function (rowIndex, matrix) {
     var row = matrix[rowIndex];
     var values = _.map(row, function (cell) {
@@ -95,18 +103,41 @@ $(document).on('ready', function () {
     return false;
   }
 
+  var hasConflicts = function (matrix) {
+    return hasRowConflicts(matrix) || hasColConflicts(matrix) || hasGroupConflicts(matrix);
+  }
+
   $('.solve')
     .on('click', function (e) {
       e.preventDefault();
 
       var matrix = generateMatrix();
-      console.log('hasRowConflicts', hasRowConflicts(matrix));
-      console.log('hasColConflicts', hasColConflicts(matrix));
-      // console.log('groupConflicts1,1', hasGroupConflictAt(1,1, matrix));
-      console.log('hasGroupConflicts', hasGroupConflicts(matrix));
+      var inner = function (rowIndex, colIndex) {
 
+      }
+
+      inner(0,0);
+
+      // var firstRow = matrix[0];
+      // for(var colIndex = 0; colIndex < firstRow.length; colIndex++) {
+      //   var cell = firstRow[colIndex];
+      //   if(cell.set === false) {
+
+      //   }
+      // }
+
+      // console.log('hasRowConflicts', hasRowConflicts(matrix));
       // console.log('hasColConflicts', hasColConflicts(matrix));
+      // console.log('hasGroupConflicts', hasGroupConflicts(matrix));
+      // console.log('hasConflicts', hasConflicts(matrix));
     }); // end on click
+
+
+  $('.clear')
+    .on('click', function (e) {
+      e.preventDefault();
+      $('input').val('');
+    });
 
   $('.tr1').find('.td1 input').focus();
 
