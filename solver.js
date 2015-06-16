@@ -124,24 +124,11 @@ $(document).on('ready', function () {
         if(cell.set) { // if the cell has been pre-set...
           return inner(rowIndex, ++colIndex, 1); // move to the next column
         } else if (!cell.set) { // otherwise...
-          // console.log('setting value:','rowIndex', rowIndex, 'colIndex', colIndex, 'value', value);
           setValue(rowIndex, colIndex, value); // set the specified input
           var conflict = hasConflicts(); // check for conflicts
           if(conflict) { // if there is a conflict ...
-            // console.log('Conflict...removing value:','rowIndex', rowIndex, 'colIndex', colIndex, 'value', value);
             removeValue(rowIndex, colIndex) // remove the value...
             if(value < 9) { // if the attempted input is less than 9...
-              // console.log('value is less than 9, checking possibility of next value at:','rowIndex', rowIndex, 'colIndex', colIndex, 'value', value+1);
-              // var possibleSoFar = inner(rowIndex, colIndex, ++value); // try again with a higher value
-              // if (possibleSoFar) {
-              //   console.log('POSSIBLE!!','rowIndex', rowIndex, 'colIndex', colIndex, 'value', value);
-              //   return possibleSoFar;
-              // } else {
-              //   console.log('not possible at:','rowIndex', rowIndex, 'colIndex', colIndex, 'value', value+1);
-              //   debugger
-                // return inner(rowIndex, ++colIndex, )
-              // }
-              /* PRIOR IMPLEMENTATION */
               return inner(rowIndex, colIndex, ++value); 
             } else { // otherwise
               debugger
