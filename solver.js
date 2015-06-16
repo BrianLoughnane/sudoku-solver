@@ -118,45 +118,56 @@ $(document).on('ready', function () {
       }
       console.log('mapValues right before declaration', mapValues)
 
-      var inner = function (rowIndex, colIndex, value) {
+      var inner = function (rowIndex, colIndex, value, reverse) {
+        console.log('mapValues', mapValues)
+        console.log('INNER:', '(',rowIndex,',', colIndex,')', 'value', value);
+
         var cell = matrix[rowIndex][colIndex];
-        console.log('INNER:','rowIndex', rowIndex, 'colIndex', colIndex, 'value', value);
         if(cell.set) { // if the cell has been pre-set...
+          if(reverse) {
+            return inner(rowIndex, --colIndex, value);
+          }
           return inner(rowIndex, ++colIndex, 1); // move to the next column
         } else if (!cell.set) { // otherwise...
           setValue(rowIndex, colIndex, value); // set the specified input
           var conflict = hasConflicts(); // check for conflicts
           if(conflict) { // if there is a conflict ...
+            console.log('conflict, removing value:', '(',rowIndex,',', colIndex,')', 'value', value);
             removeValue(rowIndex, colIndex) // remove the value...
+            // debugger  
             if(value < 9) { // if the attempted input is less than 9...
-              return inner(rowIndex, colIndex, ++value); 
+              return inner(rowIndex, colIndex, ++value); // try with the next value up
             } else { // otherwise
-              debugger
+              // debugger
               return false; // conflict is unavoidable using numbers 1-9 - go back down the line and change the values that came before
             }
+          
           } else if (!conflict) { // if there is no conflict with the newly set value
             var nextColumn = colIndex < 8; // see if there is a next column
             var nextRow = rowIndex < 8; // see if there is a new row
-            if(nextColumn) { // if there is a new column....
+            if(nextColumn) { // if there is a next column....
               var nextColWorks = inner(rowIndex, ++colIndex, 1); // move on to the next column and check to see if it provides a solution
               if(nextColWorks) { // if it provides a solution
                 return nextColWorks; // return the solution
               } else { // otherwise
-                console.log('nextCol didnt work:','rowIndex', rowIndex, 'colIndex', colIndex, 'value', value);
-                debugger
-                var nextValWorks = inner(rowIndex, colIndex, ++value); // stay in this column and increment the value
-                if(nextValWorks) {
-                  return nextValWorks;
-                } else {
-                  console.log('nextVal didnt work:','rowIndex', rowIndex, 'colIndex', colIndex, 'value', value);
-                  debugger
-                  return false;  
+                console.log('nextCol didnt work:', '(',rowIndex,',', colIndex,')', 'value', value);
+                debugger                
+                if(value < 9) { // if the value is less than 9...
+                  var nextValWorks = inner(rowIndex, --colIndex, ++value, true); // remain in this column, increment the value, and check for a solution
+                  if(nextValWorks) { // if there is a solution...
+                    return nextValWorks; // return it
+                  } else { // otherwise
+                    return false;  // end recursion
+                  }
+                } else { // if the value is not less than 9...
+                  return false; // end recursion
                 }
               }
             } else if (nextRow) { // if there is no next column, see if there is a next row
               console.log('nextRow', rowIndex+1);
               return inner(++rowIndex, 0, 1); // if so, move on to the next row
             } else if (!nextColumn && !nextRow) { // if we are on the last cell of the last row
+              debugger
               return 'no next column or row'
               // return matrix; // we have found a solution matrix, so we'll return it
             }
