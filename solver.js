@@ -146,29 +146,35 @@ $(document).on('ready', function () {
             var nextColumn = colIndex < 8; // see if there is a next column
             var nextRow = rowIndex < 8; // see if there is a new row
             if(nextColumn) { // if there is a next column....
-              var nextColWorks = inner(rowIndex, ++colIndex, 1); // move on to the next column and check to see if it provides a solution
+              var nextColWorks = inner(rowIndex, colIndex+1, 1); // move on to the next column and check to see if it provides a solution
               if(nextColWorks) { // if it provides a solution
                 return nextColWorks; // return the solution
               } else { // otherwise
-                console.log('nextCol didnt work:', '(',rowIndex,',', colIndex,')', 'value', value);
-                debugger                
+                console.log('currently at:', '(',rowIndex,',', colIndex,')', 'value', value);
+                console.log('nextCol didnt work with current spread:', '(',rowIndex,',', colIndex+1,')');
+                // debugger                
                 if(value < 9) { // if the value is less than 9...
-                  var nextValWorks = inner(rowIndex, --colIndex, ++value, true); // remain in this column, increment the value, and check for a solution
+                  var initValue = value;
+                  var nextValWorks = inner(rowIndex, colIndex, ++value); // remain in this column, increment value, and check for a solution
                   if(nextValWorks) { // if there is a solution...
                     return nextValWorks; // return it
                   } else { // otherwise
-                    return false;  // end recursion
+                    console.log('currently at:', '(',rowIndex,',', colIndex,')', 'value', value);
+                    console.log('nextVal didnt work:', '(',rowIndex,',', colIndex,')', 'value', value+1, 'reverse', true);
+                    // debugger
+                    return false
                   }
                 } else { // if the value is not less than 9...
                   return false; // end recursion
                 }
               }
             } else if (nextRow) { // if there is no next column, see if there is a next row
-              console.log('nextRow', rowIndex+1);
-              return inner(++rowIndex, 0, 1); // if so, move on to the next row
+              console.log('moving from row:', rowIndex, 'to next row:', rowIndex+1);
+              return inner(rowIndex+1, 0, 1); // if so, move on to the next row
             } else if (!nextColumn && !nextRow) { // if we are on the last cell of the last row
-              debugger
-              return 'no next column or row'
+              // debugger
+              // return 'no next column or row'
+              return matrix;
               // return matrix; // we have found a solution matrix, so we'll return it
             }
           }
