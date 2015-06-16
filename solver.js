@@ -95,6 +95,19 @@ $(document).on('ready', function () {
     return false;
   }
 
+  var drawSolution = function (matrix) {
+    var flat = _.flatten(matrix);
+    $('input').each(function(index, input) {
+      $(this).val(flat[index].value);
+    });
+    // d3.selectAll('input')
+    //   .data(flat)
+    //   .val()
+    // debugger
+
+
+  }
+
   $('.solve')
     .on('click', function (e) {
       e.preventDefault();
@@ -184,6 +197,8 @@ $(document).on('ready', function () {
       
       var result = inner(0,0,1);
       console.log(result);
+      debugger
+      drawSolution(result);
     }); // end on click
 
 
