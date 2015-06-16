@@ -28,14 +28,6 @@ $(document).on('ready', function () {
     return matrix;
   }
 
-  var setValue = function(rowIndex, colIndex, matrix, value) {
-    matrix[rowIndex][colIndex] = value;
-  }
-
-  var removeValue = function(rowIndex, colIndex, matrix) {
-    matrix[rowIndex][colIndex] = 0;
-  }
-
   var hasRowConflictAt = function (rowIndex, matrix) {
     var row = matrix[rowIndex];
     var values = _.map(row, function (cell) {
@@ -111,11 +103,44 @@ $(document).on('ready', function () {
       var hasConflicts = function () {
         return hasRowConflicts(matrix) || hasColConflicts(matrix) || hasGroupConflicts(matrix);
       }
-
-      var inner = function (rowIndex, colIndex) {
-        console.log('hasConflicts?',hasConflicts());
+      var setValue = function(rowIndex, colIndex, value) {
+        matrix[rowIndex][colIndex].value = value;
       }
-      inner(0,0);
+
+      var removeValue = function(rowIndex, colIndex) {
+        matrix[rowIndex][colIndex].value = 0;
+      }
+
+      var inner = function (rowIndex, colIndex, value) {
+        var cell = matrix[rowIndex][colIndex];
+        if(cell.set) { // if the cell has been pre-set...
+          return inner(rowIndex, ++colIndex, 1); // move to the next column
+        } else if (!cell.set) { // otherwise...
+          setValue(rowIndex, colIndex, value); // set the specified input
+          var conflict = hasConflicts(); // check for conflicts
+          if(conflict) { // if there is a conflict ...
+            removeValue(rowIndex, colIndex) // remove the value...
+            if(value < 9) { // if the attempted input is less than 9...
+              return inner(rowIndex, colIndex, ++value); // try again with a higher value
+            } else { // otherwise
+              return false; // conflict is unavoidable using numbers 1-9 - go back down the line and change the values that came before
+            }
+          } else if (!conflict) { // if there is no conflict with the newly set value
+            var nextColumn = colIndex < 8;
+            var nextRow = rowIndex < 8;
+            if(nextColumn) {
+              return inner(rowIndex, ++colIndex, 1); // move on to the next column
+            } else if (nextRow) {
+              return inner(++rowIndex, 0, 1);
+            } else if (!nextColumn && !nextRow) {
+              return matrix;
+            }
+          }
+        }
+      }
+      var result = inner(0,0,1);
+      console.log(result);
+      debugger 
     }); // end on click
 
 
