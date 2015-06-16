@@ -95,10 +95,10 @@ $(document).on('ready', function () {
     return false;
   }
 
-
   $('.solve')
     .on('click', function (e) {
       e.preventDefault();
+
       var matrix = generateMatrix();
       var hasConflicts = function () {
         return hasRowConflicts(matrix) || hasColConflicts(matrix) || hasGroupConflicts(matrix);
@@ -106,13 +106,23 @@ $(document).on('ready', function () {
       var setValue = function(rowIndex, colIndex, value) {
         matrix[rowIndex][colIndex].value = value;
       }
-
       var removeValue = function(rowIndex, colIndex) {
         matrix[rowIndex][colIndex].value = 0;
       }
+      var mapValues = function () {
+        return matrix.map(function (row) { 
+          return row.map(function (cell) { 
+            return cell.value;  
+          });
+        });
+      }
+      console.log('mapValues right before declaration', mapValues)
 
       var inner = function (rowIndex, colIndex, value) {
         var cell = matrix[rowIndex][colIndex];
+        console.log('rowIndex', rowIndex, 'colIndex', colIndex, 'value', value);
+        console.log('mapValues inner', mapValues);
+        console.log(removeValue)
         if(cell.set) { // if the cell has been pre-set...
           return inner(rowIndex, ++colIndex, 1); // move to the next column
         } else if (!cell.set) { // otherwise...
@@ -121,26 +131,48 @@ $(document).on('ready', function () {
           if(conflict) { // if there is a conflict ...
             removeValue(rowIndex, colIndex) // remove the value...
             if(value < 9) { // if the attempted input is less than 9...
-              return inner(rowIndex, colIndex, ++value); // try again with a higher value
+              var possibleSoFar = inner(rowIndex, colIndex, ++value); // try again with a higher value
+              if possibleSoFar {
+                return possibleSoFar;
+              } else {
+                return inner(rowIndex, ++colIndex, )
+              }
             } else { // otherwise
               return false; // conflict is unavoidable using numbers 1-9 - go back down the line and change the values that came before
             }
           } else if (!conflict) { // if there is no conflict with the newly set value
-            var nextColumn = colIndex < 8;
-            var nextRow = rowIndex < 8;
-            if(nextColumn) {
-              return inner(rowIndex, ++colIndex, 1); // move on to the next column
-            } else if (nextRow) {
-              return inner(++rowIndex, 0, 1);
-            } else if (!nextColumn && !nextRow) {
-              return matrix;
+            var nextColumn = colIndex < 8; // see if there is a next column
+            var nextRow = rowIndex < 8; // see if there is a new row
+            if(nextColumn) { // if there is a new column....
+              var nextColWorks = inner(rowIndex, ++colIndex, 1); // move on to the next column and check to see if it provides a solution
+              if(nextColWorks) { // if it provides a solution
+                return nextColWorks; // return the solution
+              } else { // otherwise
+                console.log('nextCol didnt work:','rowIndex', rowIndex, 'colIndex', colIndex, 'value', value);
+                debugger
+                var nextValWorks = inner(rowIndex, colIndex, ++value); // stay in this column and increment the value
+                if(nextValWorks) {
+                  return nextValWorks;
+                } else {
+                  console.log('nextVal didnt work:','rowIndex', rowIndex, 'colIndex', colIndex, 'value', value);
+                  debugger
+                  return false;  
+                }
+              }
+            } else if (nextRow) { // if there is no next column, see if there is a next row
+              console.log('nextRow', rowIndex+1);
+              return inner(++rowIndex, 0, 1); // if so, move on to the next row
+            } else if (!nextColumn && !nextRow) { // if we are on the last cell of the last row
+              return 'no next column or row'
+              // return matrix; // we have found a solution matrix, so we'll return it
             }
           }
         }
       }
+      console.log('mapValues right after declaration', mapValues)
+      
       var result = inner(0,0,1);
       console.log(result);
-      debugger 
     }); // end on click
 
 
