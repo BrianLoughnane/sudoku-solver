@@ -94,10 +94,17 @@ $(document).on('ready', function () {
     return false;
   }
 
-  var drawSolution = function (matrix) {
+  var drawMatrix = function (matrix, solution) {
     var flat = _.flatten(matrix);
+    
+    if(solution) {
+      flat = _.map(flat, function (cell) {
+        return cell.value;
+      })
+    }
+
     $('input').each(function(index, input) {
-      $(this).val(flat[index].value);
+      $(this).val(flat[index]);
     });
     // d3.selectAll('input')
     //   .data(flat)
@@ -134,6 +141,8 @@ $(document).on('ready', function () {
         console.log('INNER:', '(',rowIndex,',', colIndex,')', 'value', value);
 
         var cell = matrix[rowIndex][colIndex];
+
+        if(cell === undefined) { debugger; }
         if(cell.set) { // if the cell has been pre-set...
           if(reverse) {
             return inner(rowIndex, --colIndex, value);
@@ -194,7 +203,7 @@ $(document).on('ready', function () {
       
       var result = inner(0,0,1);
       console.log(result);
-      drawSolution(result);
+      drawMatrix(result, true);
     }); // end on click
 
 
@@ -202,6 +211,24 @@ $(document).on('ready', function () {
     .on('click', function (e) {
       e.preventDefault();
       $('input').val('');
+    });
+
+  $('.play')
+    .on('click', function (e) {
+      e.preventDefault();
+
+      drawMatrix([
+        [3, "", "", "", 5, "", "", "", 2],
+        ["", "", "", 9, "", 2, "", "", 8],
+        [5, "", "", "", "", 4, "", 9, ""],
+        [6, 3, "", "", 7, "", 8, "", ""],
+        ["", "", "", "", "", "", 3, "", ""],
+        ["", 1, 5, 6, "", 9, "", 4, ""],
+        ["", 7, "", "", "", 1, "", 2, ""],
+        ["", "", "", "", "", 6, "", "", 3],
+        ["", "", "", 2, "", "", "", "", ""]
+      ], false);
+
     });
 
   $('.tr1').find('.td1 input').focus();
