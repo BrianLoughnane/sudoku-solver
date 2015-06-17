@@ -1,3 +1,16 @@
+body, button {
+  font-family: fantasy;
+}
+
+button {
+  padding: 7px;
+  border-radius: 5px;
+  width: 105px;
+  margin: 6px;
+  background-color: darkblue;
+  color: white;
+}
+
 table {
   width: 500px;
   height: 500px;
@@ -14,10 +27,20 @@ input {
   text-align: center;
 }
 
-.td3, .td6 {
+.td3, .td6, .td9 {
   border-right: 5px solid darkblue;
 }
 
-.tr3 td, .tr6 td{
+.tr3 td, .tr6 td, .tr9 td {
   border-bottom: 5px solid darkblue;
 }
+
+.tr1 td {
+  border-top: 5px solid darkblue;
+}
+
+.td1 {
+  border-left: 5px solid darkblue;
+}
+
+

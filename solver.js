@@ -1,6 +1,5 @@
 $(document).on('ready', function () {
   var hasDuplicates = function (array) {
-    // debugger
     var sortedValues = array.sort();
     for(var i = 1; i < sortedValues.length; i++) {
       if(sortedValues[i] && (sortedValues[i] === sortedValues[i-1])) {
@@ -103,7 +102,6 @@ $(document).on('ready', function () {
     // d3.selectAll('input')
     //   .data(flat)
     //   .val()
-    // debugger
 
 
   }
@@ -147,11 +145,9 @@ $(document).on('ready', function () {
           if(conflict) { // if there is a conflict ...
             console.log('conflict, removing value:', '(',rowIndex,',', colIndex,')', 'value', value);
             removeValue(rowIndex, colIndex) // remove the value...
-            // debugger  
             if(value < 9) { // if the attempted input is less than 9...
               return inner(rowIndex, colIndex, ++value); // try with the next value up
             } else { // otherwise
-              // debugger
               return false; // conflict is unavoidable using numbers 1-9 - go back down the line and change the values that came before
             }
           
@@ -165,7 +161,6 @@ $(document).on('ready', function () {
               } else { // otherwise
                 console.log('currently at:', '(',rowIndex,',', colIndex,')', 'value', value);
                 console.log('nextCol didnt work with current spread:', '(',rowIndex,',', colIndex+1,')');
-                // debugger                
                 if(value < 9) { // if the value is less than 9...
                   var initValue = value;
                   var nextValWorks = inner(rowIndex, colIndex, ++value); // remain in this column, increment value, and check for a solution
@@ -174,7 +169,6 @@ $(document).on('ready', function () {
                   } else { // otherwise
                     console.log('currently at:', '(',rowIndex,',', colIndex,')', 'value', value);
                     console.log('nextVal didnt work:', '(',rowIndex,',', colIndex,')', 'value', value+1, 'reverse', true);
-                    // debugger
                     return false
                   }
                 } else { // if the value is not less than 9...
@@ -185,7 +179,6 @@ $(document).on('ready', function () {
               console.log('moving from row:', rowIndex, 'to next row:', rowIndex+1);
               return inner(rowIndex+1, 0, 1); // if so, move on to the next row
             } else if (!nextColumn && !nextRow) { // if we are on the last cell of the last row
-              // debugger
               // return 'no next column or row'
               return matrix;
               // return matrix; // we have found a solution matrix, so we'll return it
@@ -197,7 +190,6 @@ $(document).on('ready', function () {
       
       var result = inner(0,0,1);
       console.log(result);
-      debugger
       drawSolution(result);
     }); // end on click
 
