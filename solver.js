@@ -138,7 +138,11 @@ $(document).on('ready', function () {
           if(reverse) {
             return inner(rowIndex, --colIndex, value);
           }
-          return inner(rowIndex, ++colIndex, 1); // move to the next column
+          if(colIndex < 8) {
+            return inner(rowIndex, ++colIndex, 1); // move to the next column
+          } else {
+            return inner(++rowIndex, 0, 1);
+          }
         } else if (!cell.set) { // otherwise...
           setValue(rowIndex, colIndex, value); // set the specified input
           var conflict = hasConflicts(); // check for conflicts
