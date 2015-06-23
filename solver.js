@@ -152,7 +152,7 @@ $(document).on('ready', function () {
         var next;
 
         if((colIndex === 8) && (rowIndex === 8)) {
-          return true;
+          next = false;
         } else if (colIndex === 8) {
           next = [rowIndex+1, 0];
         } else {
@@ -160,12 +160,12 @@ $(document).on('ready', function () {
         }
 
         if(cell.set) { // if the cell has been pre-set...
-          return inner.apply(this, next);
+          return (next) ? inner.apply(this, next) : true;
         } else if(!cell.set) {
           for(var v = 1; v < 10; v++) {
             setValue(rowIndex, colIndex, v);
             if(!hasConflicts()) {
-              result = inner.apply(this, next);
+              result = (next) ? inner.apply(this, next) : true;
               if(result) {
                 return result;
               }
