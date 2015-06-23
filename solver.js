@@ -138,84 +138,48 @@ $(document).on('ready', function () {
       }
 
 
-      console.log('mapValues right before declaration', mapValues)
+      // // helper
+      // var rcv = function (r, c, v) {
+      //   return _.isEqual([rowIndex, colIndex, value], [r,c,v]);
+      // }
+      // // end helper
+      // console.log('mapValues right before declaration', mapValues)
+      // console.log('mapValues', mapValues)
 
-      var inner = function (rowIndex, colIndex, value, reverse) {
-        // helper
-        var rcv = function (r, c, v) {
-          return _.isEqual([rowIndex, colIndex, value], [r,c,v]);
-        }
-        // end helper
-
-        console.log('mapValues', mapValues)
-        console.log('INNER:', '(',rowIndex,',', colIndex,')', 'value', value);
-
+      var inner = function (rowIndex, colIndex) {
+        console.log('INNER:', '(',rowIndex,',', colIndex,')');
         var cell = matrix[rowIndex][colIndex];
+        var next;
 
-        if(cell === undefined) { debugger; }
+        if((colIndex === 8) && (rowIndex === 8)) {
+          return true;
+        } else if (colIndex === 8) {
+          next = [rowIndex+1, 0];
+        } else {
+          next = [rowIndex, colIndex+1];
+        }
+
         if(cell.set) { // if the cell has been pre-set...
-          if(reverse) {
-            return inner(rowIndex, --colIndex, value);
-          }
-          if(colIndex < 8) {
-            return inner(rowIndex, ++colIndex, 1); // move to the next column
-          } else {
-            return inner(++rowIndex, 0, 1);
-          }
-        } else if (!cell.set) { // otherwise...
-          setValue(rowIndex, colIndex, value); // set the specified input
-          var conflict = hasConflicts(); // check for conflicts
-          if(conflict) { // if there is a conflict ...
-            console.log('conflict, removing value:', '(',rowIndex,',', colIndex,')', 'value', value);
-            removeValue(rowIndex, colIndex) // remove the value...
-            if(value < 9) { // if the attempted input is less than 9...
-              return inner(rowIndex, colIndex, ++value); // try with the next value up
-            } else { // otherwise
-              return false; // conflict is unavoidable using numbers 1-9 - go back down the line and change the values that came before
-            }
-          
-          } else if (!conflict) { // if there is no conflict with the newly set value
-            var nextColumn = colIndex < 8; // see if there is a next column
-            var nextRow = rowIndex < 8; // see if there is a new row
-            if(nextColumn) { // if there is a next column....
-              var nextColWorks = inner(rowIndex, colIndex+1, 1); // move on to the next column and check to see if it provides a solution
-              if(nextColWorks) { // if it provides a solution
-                return nextColWorks; // return the solution
-              } else { // otherwise
-                console.log('currently at:', '(',rowIndex,',', colIndex,')', 'value', value);
-                console.log('nextCol didnt work with current spread at:', '(',rowIndex,',', colIndex,')');
-                if(value < 9) { // if the value is less than 9...
-                  var initValue = value;
-                  var nextValWorks = inner(rowIndex, colIndex, ++value); // remain in this column, increment value, and check for a solution
-                  if(nextValWorks) { // if there is a solution...
-                    return nextValWorks; // return it
-                  } else { // otherwise
-                    console.log('currently at:', '(',rowIndex,',', colIndex,')', 'value', value);
-                    console.log('nextVal didnt work:', '(',rowIndex,',', colIndex,')', 'value', value, 'reverse', true);
-                    // if(rcv(0,1,5)) { debugger; } 
-                    return false
-                    // return inner(rowIndex, colIndex, ++value);
-                  }
-                } else { // if the value is not less than 9...
-                  return false; // end recursion
-                }
+          return inner.apply(this, next);
+        } else if(!cell.set) {
+          for(var v = 1; v < 10; v++) {
+            setValue(rowIndex, colIndex, v);
+            if(!hasConflicts()) {
+              result = inner.apply(this, next);
+              if(result) {
+                return result;
               }
-            } else if (nextRow) { // if there is no next column, see if there is a next row
-              console.log('moving from row:', rowIndex, 'to next row:', rowIndex+1);
-              return inner(rowIndex+1, 0, 1); // if so, move on to the next row
-            } else if (!nextColumn && !nextRow) { // if we are on the last cell of the last row
-              // return 'no next column or row'
-              return matrix;
-              // return matrix; // we have found a solution matrix, so we'll return it
             }
           }
+          removeValue(rowIndex, colIndex);
+          return false;
         }
       }
-      console.log('mapValues right after declaration', mapValues)
+      // console.log('mapValues right after declaration', mapValues)
       
-      var result = inner(0,0,1);
-      console.log(result);
-      drawMatrix(result, true);
+      inner(0,0);
+      console.log(matrix);
+      drawMatrix(matrix, true);
     }); // end on click
 
 
